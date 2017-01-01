@@ -132,10 +132,6 @@ for(i in 1:maxIter)
         
         hidd_delta0=(head(t(Theta0)%*%hidd_delta1,200))*GS(z2)
         
-        ########## delta calculations  #############
-        
-        #delta=delta+dim(hidd_delta0%*%a1
-        
         ########## weight updation ###############
         
         Theta00=Theta00-(1/m)*(hidd_delta0%*%t(a1))
