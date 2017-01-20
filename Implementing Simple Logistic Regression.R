@@ -1,46 +1,55 @@
 ################ Logistic Regression ##################
 
-################# Data Input
-x <- read.table("ex4x.dat")
-y <- read.table("ex4y.dat")
+## Set Directory
+
+m=47;
+
+###############   Data Input ###############
+
+x <- read.table("ex3x.dat")
+y <- read.table("ex3y.dat")
 x<-matrix(as.numeric(unlist(x)),nrow=nrow(x))
 y<-matrix(as.numeric(unlist(y)),nrow=nrow(y))
-x<-cbind(matrix(1, nrow(x),1), x)
-m=nrow(x)
+x<-cbind(matrix(1, 47,1),x)
 
-################# plotting of data  ################ 
+##############     Feature scaling  ###############
 
-plot(x[1:40, 2], x[1:40, 3], pch = 3, xlab = "Score1", ylab = "Score2") 
-points(x[41:80, 2], x[41:80, 3], pch = 1, xlab = "Score1", ylab = "Score2")
+meanx2=mean(x[,2]);
+meanx3=mean(x[,3]);
+stdx2=sd(x[,2]);
+stdx3=sd(x[,3]);
+x[,2]=(x[,2]-meanx2)/stdx2;
+x[,3]=(x[,3]-meanx3)/stdx3;
 
-#################  sigmoid function   ################ 
-g<-function(n)
-{
-    return(1.0/(1.0+exp(-n)))
-}
+##############  Coeff matrix  ###############
 
-#################   features matrix  ################ 
 theta<-matrix(0, 1, 3)
 
-#################   Cost function  ################ 
-J=matrix(0,1,50)
+##############   Learning Rate  ###############
 
-###################################
-hypoth=matrix(11, nrow(x), 1)
-hypoth1=t(theta%*%t(x))
-for(i in 1: nrow(x))
-{
-    hypoth[i,1]=g(hypoth1[i,1])
-}
+alpha= 1;
 
-###################################
-#optimization loops
+##############  Cost function  ###############
+
+J=matrix(0,1,50);
+
+##############  Optimization loops  ###############
+
 for(i in 1:50)
-{    
-    J[,1]<-(1/m)*(t(y)%*%log(hypoth)-t(1-y)%*%log(1-hypoth))
-    hess=(1/m)*t(t(hypoth)%*%(1-hypoth)%*%t(x))%*%x              ### Hessian matrix computation
-    theta=theta-(1/2m)*(t(theta*t(x)-y))
+{
+    J[,i]<-(1/2*m)*(t(t(theta%*%t(x))-y))%*%(t(theta%*%t(x))-y)
+    hypoth=theta%*%t(x)
+    hypoth<-t(hypoth)
+    theta=theta-alpha*(1/m)*(t(hypoth-y)%*%x)
 }
+
+#############    Plot   ###############
+
+plot(1:50,J, "l")
+theta
+theta%*%(c(1,(1650-meanx2)/stdx2,(3-meanx3)/stdx3))
+plot(x[,3],y)
+
 
 
 
